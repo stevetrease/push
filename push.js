@@ -14,7 +14,7 @@ function log(type) {
         console.log(type, arguments);
     }
 }
-
+ 
 var count = 0;
 var devices = [];
 

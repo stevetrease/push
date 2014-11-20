@@ -19,18 +19,25 @@ var count = 0;
 var devices = [];
 
 // get initial set of push tokens
-redisClient.smembers("push-tokens", function (err, replies) {
-	console.log(replies);
-	devices = replies;
+redisClient.smembers("push-tokens-devices", function (err, replies) {
+	console.log("loading " +  replies.length + " devices");
+	for (r in replies) { 
+		var obj = JSON.parse(replies[r]);
+		devices.push(obj);
+	}
 });
 
 // subscribe to redis channel "push-tokens-change" and refresh tokens
 subscriber.subscribe("push-tokens-change");
 subscriber.on("message", function(channel, message) {
 	console.log("push-tokens-change");
-	redisClient.smembers("push-tokens", function (err, replies) {
-        	console.log(replies);
-        	devices = replies;
+	redisClient.smembers("push-tokens-devices", function (err, replies) {	
+		devices = [];
+		console.log("loading " +  replies.length + " devices");	
+		for (r in replies) { 
+			var obj = JSON.parse(replies[r]);
+			devices.push(obj);
+		}
 	});
 });
 
@@ -62,14 +69,14 @@ mqttclient.on('connect', function() {
 		}
 		for (d in devices) {
 			count++;
-			console.log("push " + count + ": " + devices[d]);
+			console.log("-   push " + count + ": " + devices[d].device);
 			agent.createMessage()
   				.alert(pushAlert)
   				.set('payload', pushMessage)
 				.set('timestamp', Date.now() / 1000)
 				.set('messageID', count)
 				.contentAvailable(true)
-  				.device(devices[d])
+  				.device(devices[d].token)
   				.send();
 		}
 	});

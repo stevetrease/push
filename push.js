@@ -34,17 +34,6 @@ subscriber.on("message", function(channel, message) {
 	});
 });
 
-// send startup message to all clients
-for (d in devices) {
-	count++
-	agent.createMessage()
-		.alert("Push service starting")
-  		.set('payload', new Date()/1000)
-		.contentAvailable(true)
-		.device(devices[d])
-  		.send();
-}
-
 
 var mqtt = require('mqtt');
 var mqttclient = mqtt.createClient(parseInt(config.mqtt.port, 10), config.mqtt.host, function(err, client) {

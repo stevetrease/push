@@ -27,7 +27,7 @@ redisClient.smembers("push-tokens", function (err, replies) {
 // subscribe to redis channel "push-tokens-change" and refresh tokens
 subscriber.subscribe("push-tokens-change");
 subscriber.on("message", function(channel, message) {
-	console.log("push-tokens-change")
+	console.log("push-tokens-change");
 	redisClient.smembers("push-tokens", function (err, replies) {
         	console.log(replies);
         	devices = replies;
@@ -40,29 +40,29 @@ var mqttclient = mqtt.createClient(parseInt(config.mqtt.port, 10), config.mqtt.h
 		keepalive: 1000
 });
 mqttclient.on('connect', function() {
-	console.log("subscribing")
+	console.log("subscribing");
 	mqttclient.subscribe('push/message');
 	mqttclient.subscribe('push/alert');
 
 	mqttclient.on('message', function(topic, message) {
-		count++
 		switch(topic) {
 			case "push/alert":
 				console.log ("alert: " + message);
-				pushAlert = message
-				pushMessage = ""
+				pushAlert = message;
+				pushMessage = "";
 				break;
 			case "push/message":
 				object = JSON.parse(message)
 				console.log ("message: " + object.alert);
-				pushAlert = object.alert
-				pushMessage = object.message
+				pushAlert = object.alert;
+				pushMessage = object.message;
 				break;
 			default: 
 				console.log ("invalid topic " & topic);
 		}
 		for (d in devices) {
-			console.log("push " + count + ": " + devices[d])
+			count++;
+			console.log("push " + count + ": " + devices[d]);
 			agent.createMessage()
   				.alert(pushAlert)
   				.set('payload', pushMessage)
@@ -74,4 +74,3 @@ mqttclient.on('connect', function() {
 		}
 	});
 });
-

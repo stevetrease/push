@@ -52,6 +52,7 @@ mqttclient.on('connect', function() {
 	mqttclient.subscribe('push/alert');
 
 	mqttclient.on('message', function(topic, message) {
+		count++;
 		switch(topic) {
 			case "push/alert":
 				console.log ("alert: " + message);
@@ -68,7 +69,6 @@ mqttclient.on('connect', function() {
 				console.log ("invalid topic " & topic);
 		}
 		for (d in devices) {
-			count++;
 			console.log("-   push " + count + ": " + devices[d].device);
 			agent.createMessage()
   				.alert(pushAlert)

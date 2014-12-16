@@ -1,6 +1,9 @@
 // Locate your certificate
-var join = require('path').join
-  , pfx = join(__dirname, '../_certs/prod.p12');
+var join = require('path').join;
+
+// var pfx = join(__dirname, '../_certs/sandbox.p12');
+var pfx = join(__dirname, '../_certs/prod.p12');
+
 
 
 // Create a new agent
@@ -10,7 +13,7 @@ var apnagent = require('apnagent')
 // set our credentials
 agent.set('pfx file', pfx);
 
-// our credentials were for development
+// agent.enable('sandbox');
 agent.enable('production');
 
 

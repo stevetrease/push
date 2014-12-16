@@ -72,6 +72,7 @@ mqttclient.on('connect', function() {
 			console.log("-   push " + count + ": " + devices[d].device);
 			agent.createMessage()
   				.alert(pushAlert)
+  				.sound()      // fix for silent pushes not working woth prod for iOS 8.1
   				.set('payload', pushMessage)
 				.set('timestamp', Date.now() / 1000)
 				.set('messageID', count)

@@ -1,8 +1,14 @@
 var config = require('./config.json');
 var agent = require("./agent/_header");
+var feedbackagent = require ('apnagent');
+var feedback = new feedbackagent.Feedback ();
 var redis = require('redis')
    ,redisClient = redis.createClient(parseInt(config.redis.port,10), config.redis.host);
 var subscriber = redis.createClient(parseInt(config.redis.port,10), config.redis.host);
+
+feedback
+	.set('interval', '30s')
+	.connect();
 
 
 redisClient.on('connect'     , log('redis connect'));
@@ -81,4 +87,13 @@ mqttclient.on('connect', function() {
   				.send();
 		}
 	});
+});
+
+
+
+feedback.use (function (device, timestamp, done) {
+	var token = device.toString();
+	var ts = timestamp.getTime();
+	
+	console.log ("feedback event: device " + token);	
 });

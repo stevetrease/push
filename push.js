@@ -1,4 +1,18 @@
-var config = require('./config.json');
+console.log("process.env.NODE_ENV:" + process.env.NODE_ENV);
+switch (process.env.NODE_ENV) {
+	case 'development':
+		console.log ("production mode");
+		var config = require('./config.json');
+		break;
+	case 'production':
+		console.log ("development mode");
+	default:	
+		var config = require('./config.json');
+}
+
+
+
+
 var agent = require("./agent/_header");
 var feedbackagent = require ('apnagent');
 var feedback = new feedbackagent.Feedback ();
@@ -6,9 +20,10 @@ var redis = require('redis')
    ,redisClient = redis.createClient(parseInt(config.redis.port,10), config.redis.host);
 var subscriber = redis.createClient(parseInt(config.redis.port,10), config.redis.host);
 
-feedback
-	.set('interval', '30s')
-	.connect();
+
+
+
+
 
 
 redisClient.on('connect'     , log('redis connect'));
@@ -90,7 +105,9 @@ mqttclient.on('connect', function() {
 });
 
 
-
+feedback
+	.set('interval', '30s')
+	.connect();
 feedback.use (function (device, timestamp, done) {
 	var token = device.toString();
 	var ts = timestamp.getTime();

@@ -5,8 +5,8 @@ switch (process.env.NODE_ENV) {
 		var config = require('./config.json');
 		break;
 	case 'production':
-		console.log ("development mode");
 	default:	
+		console.log ("development mode");
 		var config = require('./config.json');
 }
 

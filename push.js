@@ -1,12 +1,12 @@
 console.log("process.env.NODE_ENV:" + process.env.NODE_ENV);
 switch (process.env.NODE_ENV) {
 	case 'development':
-		console.log ("production mode");
+		console.log ("development mode");
 		var config = require('./config.json');
 		break;
 	case 'production':
 	default:	
-		console.log ("development mode");
+		console.log ("production mode");
 		var config = require('./config.json');
 }
 

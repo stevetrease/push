@@ -1,0 +1,15 @@
+[Unit]
+Description=APN Push Server
+After=mosquitto.service
+Requires=mosquitto.service
+
+[Service]
+ExecStart=/home/steve/push/push.sh
+WorkingDirectory=/home/steve/push
+Environment=NODE_ENV=production
+Type=simple
+User=steve
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

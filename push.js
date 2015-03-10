@@ -24,8 +24,6 @@ var subscriber = redis.createClient(parseInt(config.redis.port,10), config.redis
 
 
 
-
-
 redisClient.on('connect'     , log('redis connect'));
 redisClient.on('ready'       , log('redis ready'));
 redisClient.on('reconnecting', log('redis reconnecting'));

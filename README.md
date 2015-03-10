@@ -1,4 +1,4 @@
 push
 ====
 
-Edited.
+Edited

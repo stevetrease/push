@@ -1,19 +1,18 @@
 console.log("process.env.NODE_ENV:" + process.env.NODE_ENV);
 switch (process.env.NODE_ENV) {
-	case 'development':
-		console.log ("development mode");
+	case 'sandbox':
+		console.log ("sandbox mode");
 		var config = require('./config.json');
+		var agent = require("./agent/_header_sand");
 		break;
 	case 'production':
 	default:	
 		console.log ("production mode");
 		var config = require('./config.json');
+		var agent = require("./agent/_header_prod");
 }
 
 
-
-
-var agent = require("./agent/_header");
 var feedbackagent = require ('apnagent');
 var feedback = new feedbackagent.Feedback ();
 var redis = require('redis')

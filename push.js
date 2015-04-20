@@ -4,12 +4,14 @@ switch (process.env.NODE_ENV) {
 		console.log ("sandbox mode");
 		var config = require('./config.json');
 		var agent = require("./agent/_header_sand");
+		var pushTokenDevices = "push-tokens-devices-sand";
 		break;
 	case 'production':
 	default:	
 		console.log ("production mode");
 		var config = require('./config.json');
 		var agent = require("./agent/_header_prod");
+		var pushTokenDevices = "push-tokens-devices";
 }
 
 
@@ -37,7 +39,7 @@ var count = 0;
 var devices = [];
 
 // get initial set of push tokens
-redisClient.smembers("push-tokens-devices", function (err, replies) {
+redisClient.smembers(pushTokenDevices, function (err, replies) {
 	console.log("loading " +  replies.length + " devices");
 	for (r in replies) { 
 		var obj = JSON.parse(replies[r]);
@@ -49,7 +51,7 @@ redisClient.smembers("push-tokens-devices", function (err, replies) {
 subscriber.subscribe("push-tokens-change");
 subscriber.on("message", function(channel, message) {
 	console.log("push-tokens-change");
-	redisClient.smembers("push-tokens-devices", function (err, replies) {	
+	redisClient.smembers(pushTokenDevices, function (err, replies) {	
 		devices = [];
 		console.log("loading " +  replies.length + " devices");	
 		for (r in replies) { 

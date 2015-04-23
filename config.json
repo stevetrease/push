@@ -1,8 +1,7 @@
 {
     "mqtt":
     {
-        "host": "mqtt.trease.eu",
-        "port": "1883"
+        "host": "mqtt://mqtt.trease.eu"
     },
     "redis":
     {

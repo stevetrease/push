@@ -63,9 +63,7 @@ subscriber.on("message", function(channel, message) {
 
 
 var mqtt = require('mqtt');
-var mqttclient = mqtt.createClient(parseInt(config.mqtt.port, 10), config.mqtt.host, function(err, client) {
-		keepalive: 1000
-});
+var mqttclient = mqtt.connect(config.mqtt.host);
 mqttclient.on('connect', function() {
 	console.log("subscribing");
 	mqttclient.subscribe('push/message');
@@ -75,12 +73,12 @@ mqttclient.on('connect', function() {
 		count++;
 		switch(topic) {
 			case "push/alert":
-				console.log ("alert: " + message);
-				pushAlert = message;
+				console.log ("alert: " + message.toString());
+				pushAlert = message.toString();
 				pushMessage = "";
 				break;
 			case "push/message":
-				object = JSON.parse(message)
+				object = JSON.parse(message.toString());
 				console.log ("message: " + object.alert);
 				pushAlert = object.alert;
 				pushMessage = object.message;

@@ -2,6 +2,7 @@ console.log("process.env.NODE_ENV:" + process.env.NODE_ENV);
 switch (process.env.NODE_ENV) {
 	case 'sandbox':
 		console.log ("sandbox mode");
+		var prod_mode = "sandbox";
 		var config = require('./config.json');
 		var agent = require("./agent/_header_sand");
 		var pushTokenDevices = "push-tokens-devices-sand";
@@ -10,6 +11,7 @@ switch (process.env.NODE_ENV) {
 	default:	
 		console.log ("production mode");
 		var config = require('./config.json');
+		var prod_mode = "production";
 		var agent = require("./agent/_header_prod");
 		var pushTokenDevices = "push-tokens-devices";
 }
@@ -65,7 +67,7 @@ subscriber.on("message", function(channel, message) {
 var mqtt = require('mqtt');
 var mqttclient = mqtt.connect(config.mqtt.host);
 mqttclient.on('connect', function() {
-	console.log("subscribing");
+	console.log("connect");
 	mqttclient.subscribe('push/message');
 	mqttclient.subscribe('push/alert');
 
@@ -109,5 +111,6 @@ feedback.use (function (device, timestamp, done) {
 	var token = device.toString();
 	var ts = timestamp.getTime();
 	
+	mqttclient.publish("push/alert", prod_mode + " feedback event for device " + token);
 	console.log ("feedback event: device " + token);	
 });

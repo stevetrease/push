@@ -75,30 +75,37 @@ mqttclient.on('connect', function() {
 		count++;
 		switch(topic) {
 			case "push/alert":
-				console.log ("alert: " + message.toString());
+				console.log ("alert " + count + ": " + message.toString());
 				pushAlert = message.toString();
-				pushMessage = "";
+				pushMessage = message.toString();
 				break;
 			case "push/message":
-				object = JSON.parse(message.toString());
-				console.log ("message: " + object.alert);
-				pushAlert = object.alert;
-				pushMessage = object.message;
+				console.log ("message " + count +": " + message.toString());
+				pushAlert = message.toString();
+				pushMessage = message.toString();
 				break;
+
 			default: 
 				console.log ("invalid topic " & topic);
 		}
 		for (d in devices) {
-			console.log("-   push " + count + ": " + devices[d].device);
-			agent.createMessage()
-  				.alert(pushAlert)
+			console.log("-    " + devices[d].device);
+			var push = agent.createMessage()
   				.sound()      // fix for silent pushes not working woth prod for iOS 8.1
   				.set('payload', pushMessage)
 				.set('timestamp', Date.now() / 1000)
 				.set('messageID', count)
 				.contentAvailable(true)
-  				.device(devices[d].token)
-  				.send();
+  				.device(devices[d].token);
+  			switch(topic) {
+			case "push/alert":
+			  	push.alert(pushAlert);
+				break;
+			case "push/message":
+				push.alert();
+				break;
+			}	
+			push.send();
 		}
 	});
 });

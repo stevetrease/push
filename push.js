@@ -65,13 +65,25 @@ subscriber.on("message", function(channel, message) {
 
 
 var mqtt = require('mqtt');
-var mqttclient = mqtt.connect(config.mqtt.host);
+var mqttclient = mqtt.connect(config.mqtt.host, config.mqtt.options);
 mqttclient.on('connect', function() {
 	console.log("connect");
 	mqttclient.subscribe('push/message');
 	mqttclient.subscribe('push/alert');
 
 	mqttclient.on('message', function(topic, message) {
+
+
+              	// superess Particle boot messages
+               	function stringStartsWith (string, prefix) {
+               		return string.slice(0, prefix.length) == prefix;
+                }
+		var x = message.toString();
+                if (stringStartsWith(x, "Particle")) {
+			return;
+		}
+
+
 		count++;
 		switch(topic) {
 			case "push/alert":

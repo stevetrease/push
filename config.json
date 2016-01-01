@@ -1,11 +1,14 @@
 {
-    "mqtt":
-    {
-        "host": "mqtt://mqtt.trease.eu"
+    "mqtt": {
+        "host": "mqtt://localhost",
+        "options": {
+		"username": "mosquitto username",
+		"password": "mosquitto password"
+        }
     },
     "redis":
     {
-        "host": "redis.trease.eu",
+        "host": "localhost",
         "port": "6379"
     }
 }

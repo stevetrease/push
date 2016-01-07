@@ -71,35 +71,45 @@ mqttclient.on('connect', function() {
 	mqttclient.subscribe('push/message');
 	mqttclient.subscribe('push/alert');
 
+	var lastMessage = "";
+	var lastMessageType = "";
+
 	mqttclient.on('message', function(topic, message) {
-
-
               	// superess Particle boot messages
-               	function stringStartsWith (string, prefix) {
-               		return string.slice(0, prefix.length) == prefix;
-                }
-		var x = message.toString();
-                if (stringStartsWith(x, "Particle")) {
-			return;
-		}
-
-
+               	//func// tion stringStartsWith (string, prefix) {
+               	//	return string.slice(0, prefix.length) == prefix;
+                //}
+		// var x = message.toString();
+           //     if (stringStartsWith(x, "Particle")) {
+			// return;
+		//}
+		
+		var messageType = "";
 		count++;
-		switch(topic) {
+		switch (topic) {
 			case "push/alert":
 				console.log ("alert " + count + ": " + message.toString());
 				pushAlert = message.toString();
 				pushMessage = message.toString();
+				messageType = "alert";
 				break;
 			case "push/message":
 				console.log ("message " + count +": " + message.toString());
 				pushAlert = message.toString();
 				pushMessage = message.toString();
+				messageType = "message";
 				break;
-
 			default: 
 				console.log ("invalid topic " & topic);
 		}
+		
+		if ((lastMessage == message.toString()) && (lastMessageType == messageType)) {
+			console.log ("suppressing duplicate message: " + message.toString());
+			return
+		}
+		lastMessage = message.toString();
+		lastMessageType = messageType;
+		
 		for (d in devices) {
 			console.log("-    " + devices[d].device);
 			var push = agent.createMessage()
@@ -109,14 +119,16 @@ mqttclient.on('connect', function() {
 				.set('messageID', count)
 				.contentAvailable(true)
   				.device(devices[d].token);
-  			switch(topic) {
-			case "push/alert":
-			  	push.alert(pushAlert);
-				break;
-			case "push/message":
-				push.alert();
-				break;
-			}	
+  			switch (messageType) {
+				case "alert":
+			  		push.alert(pushAlert);
+			  		break;
+			  	case "message":
+			  		push.alert();
+			  		break;
+				default:
+					console.log ("invalid message type: " + messageType);
+				}	
 			push.send();
 		}
 	});

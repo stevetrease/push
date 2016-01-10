@@ -25,6 +25,12 @@ var subscriber = redis.createClient(parseInt(config.redis.port,10), config.redis
 
 
 
+String.prototype.startsWith = function(needle)
+{
+    return(this.indexOf(needle) == 0);
+};
+
+
 
 
 redisClient.on('connect'     , log('redis connect'));
@@ -75,17 +81,14 @@ mqttclient.on('connect', function() {
 	var lastMessageType = "";
 
 	mqttclient.on('message', function(topic, message) {
-              	// superess Particle boot messages
-               	//func// tion stringStartsWith (string, prefix) {
-               	//	return string.slice(0, prefix.length) == prefix;
-                //}
-		// var x = message.toString();
-           //     if (stringStartsWith(x, "Particle")) {
-			// return;
-		//}
-		
+ 		
 		var messageType = "";
 		count++;
+		
+		// poor practice - hardcoding certain message spam we don't want to push
+		if (message.toString().startsWith("Particle booted")) return;
+		if (message.toString().startsWith("dnsmasq netatmo")) return;
+				
 		switch (topic) {
 			case "push/alert":
 				console.log ("alert " + count + ": " + message.toString());

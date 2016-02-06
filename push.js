@@ -27,7 +27,7 @@ var subscriber = redis.createClient(parseInt(config.redis.port,10), config.redis
 
 String.prototype.startsWith = function(needle)
 {
-    return(this.indexOf(needle) == 0);
+	return(this.indexOf(needle) == 0);
 };
 
 
@@ -38,9 +38,9 @@ redisClient.on('ready'       , log('redis ready'));
 redisClient.on('reconnecting', log('redis reconnecting'));
 redisClient.on('error'       , log('redis error'));
 function log(type) {
-    return function() {
-        console.log(type, arguments);
-    }
+	return function() {
+		console.log(type, arguments);
+	}
 }
  
 var count = 0;
@@ -48,7 +48,7 @@ var devices = [];
 
 // get initial set of push tokens
 redisClient.smembers(pushTokenDevices, function (err, replies) {
-	console.log("loading " +  replies.length + " devices");
+	console.log("loading " + replies.length + " devices");
 	for (r in replies) { 
 		var obj = JSON.parse(replies[r]);
 		devices.push(obj);
@@ -61,7 +61,7 @@ subscriber.on("message", function(channel, message) {
 	console.log("push-tokens-change");
 	redisClient.smembers(pushTokenDevices, function (err, replies) {	
 		devices = [];
-		console.log("loading " +  replies.length + " devices");	
+		console.log("loading " + replies.length + " devices");	
 		for (r in replies) { 
 			var obj = JSON.parse(replies[r]);
 			devices.push(obj);
@@ -81,7 +81,7 @@ mqttclient.on('connect', function() {
 	var lastMessageType = "";
 
 	mqttclient.on('message', function(topic, message) {
- 		
+		
 		var messageType = "";
 		count++;
 		
@@ -116,13 +116,13 @@ mqttclient.on('connect', function() {
 		for (d in devices) {
 			console.log("-    " + devices[d].device);
 			var push = agent.createMessage()
-  				.sound()      // fix for silent pushes not working woth prod for iOS 8.1
-  				.set('payload', pushMessage)
+				.sound()      // fix for silent pushes not working woth prod for iOS 8.1
+				.set('payload', pushMessage)
 				.set('timestamp', Date.now() / 1000)
 				.set('messageID', count)
 				.contentAvailable(true)
-  				.device(devices[d].token);
-  			switch (messageType) {
+				.device(devices[d].token);
+			switch (messageType) {
 				case "alert":
 			  		push.alert(pushAlert);
 			  		break;
